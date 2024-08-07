@@ -6,7 +6,7 @@
 
 vps一键脚本
 ```
-bash <(curl -Ls https://raw.githubusercontent.com/ansoncloud8/am-vps-proxy/main/sing-box.sh)
+bash <(curl -Ls https://raw.githubusercontent.com/ansoncloud8/am-vps-sing-box/main/sing-box.sh)
 ```
 
 ssh综合工具箱一键脚本
@@ -23,12 +23,12 @@ curl -fsSL https://raw.githubusercontent.com/ansoncloud8/am-vps-ssh-tool/main/ss
 
 一键四协议安装脚本vmess-ws|vmess-ws-tls(argo)|hy2|tuic5
 ```
-bash <(curl -Ls https://raw.githubusercontent.com/ansoncloud8/am-vps-proxy/main/sb_serv00.sh)
+bash <(curl -Ls https://raw.githubusercontent.com/ansoncloud8/am-vps-sing-box/main/sb_serv00.sh)
 ```
 
 一键三协议安装脚本vless-reality|hy2|tuic5 
 ```
-bash <(curl -Ls https://raw.githubusercontent.com/ansoncloud8/am-vps-proxy/test/sb_00.sh)
+bash <(curl -Ls https://raw.githubusercontent.com/ansoncloud8/am-vps-sing-box/test/sb_00.sh)
 ```
 
 # 3：游戏机hosting
