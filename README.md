@@ -34,7 +34,7 @@ bash <(curl -Ls https://raw.githubusercontent.com/ansoncloud8/am-vps-sing-box/ma
 
 一键三协议安装脚本vless-reality|hy2|tuic5 
 ```
-bash <(curl -Ls https://raw.githubusercontent.com/ansoncloud8/am-vps-sing-box/test/sb_00.sh)
+bash <(curl -Ls https://raw.githubusercontent.com/ansoncloud8/am-vps-sing-box/main/sb_00.sh)
 ```
 
 # 3：游戏机hosting
