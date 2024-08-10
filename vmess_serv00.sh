@@ -36,6 +36,18 @@ read_vmess_port() {
     done
 }
 
+read_vless_port() {
+    while true; do
+        reading "请输入vless端口 (面板开放的TCP端口): " hy2_port
+        if [[ "$vless_port" =~ ^[0-9]+$ ]] && [ "$vless_port" -ge 1 ] && [ "$vless_port" -le 65535 ]; then
+            green "你的vless端口为: $vless_port"
+            break
+        else
+            yellow "输入错误，请重新输入面板开放的TCP端口"
+        fi
+    done
+}
+
 # read_hy2_port() {
 #     while true; do
 #         reading "请输入hysteria2端口 (面板开放的UDP端口): " hy2_port
@@ -88,6 +100,7 @@ reading "\n确定继续安装吗？【y/n】: " choice
         cd $WORKDIR
         read_nz_variables
         read_vmess_port
+	read_vless_port
         # read_hy2_port
         # read_tuic_port
         # argo_configure
@@ -248,6 +261,25 @@ generate_config() {
       "early_data_header_name": "Sec-WebSocket-Protocol"
       }
     }
+   , {
+    "tag": "vless-ws",
+    "type": "vless",
+    "listen": "::",
+    "listen_port": $vless_port,
+    "users": [
+        {
+            "uuid": "$UUID",
+            "flow": ""
+        }
+    ],
+    "stream_settings": {
+        "network": "ws",
+        "ws_settings": {
+            "path": "/ws?ed=2048"  
+        }
+    }
+}
+
 
  ],
     "outbounds": [
