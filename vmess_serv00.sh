@@ -428,15 +428,15 @@ run_sb() {
 }
 
 get_links(){
-  get_argodomain() {
-    if [[ -n $ARGO_AUTH ]]; then
-      echo "$ARGO_DOMAIN"
-    else
-      grep -oE 'https://[[:alnum:]+\.-]+\.trycloudflare\.com' boot.log | sed 's@https://@@'
-    fi
-  }
-argodomain=$(get_argodomain)
-echo -e "\e[1;32mArgoDomain:\e[1;35m${argodomain}\e[0m\n"
+#   get_argodomain() {
+#     if [[ -n $ARGO_AUTH ]]; then
+#       echo "$ARGO_DOMAIN"
+#     else
+#       grep -oE 'https://[[:alnum:]+\.-]+\.trycloudflare\.com' boot.log | sed 's@https://@@'
+#     fi
+#   }
+# argodomain=$(get_argodomain)
+# echo -e "\e[1;32mArgoDomain:\e[1;35m${argodomain}\e[0m\n"
 sleep 1
 # get ip
 IP=$(curl -s ipv4.ip.sb || { ipv6=$(curl -s --max-time 1 ipv6.ip.sb); echo "[$ipv6]"; })
