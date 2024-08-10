@@ -18,8 +18,8 @@ export UUID=${UUID:-'bc97f674-c578-4940-9234-0a1da46041b9'}
 export NEZHA_SERVER=${NEZHA_SERVER:-''} 
 export NEZHA_PORT=${NEZHA_PORT:-'5555'}     
 export NEZHA_KEY=${NEZHA_KEY:-''} 
-export ARGO_DOMAIN=${ARGO_DOMAIN:-''}   
-export ARGO_AUTH=${ARGO_AUTH:-''} 
+# export ARGO_DOMAIN=${ARGO_DOMAIN:-''}   
+# export ARGO_AUTH=${ARGO_AUTH:-''} 
 
 [[ "$HOSTNAME" == "s1.ct8.pl" ]] && WORKDIR="domains/${USERNAME}.ct8.pl/logs" || WORKDIR="domains/${USERNAME}.serv00.net/logs"
 [ -d "$WORKDIR" ] || (mkdir -p "$WORKDIR" && chmod 777 "$WORKDIR")
@@ -36,29 +36,29 @@ read_vmess_port() {
     done
 }
 
-read_hy2_port() {
-    while true; do
-        reading "请输入hysteria2端口 (面板开放的UDP端口): " hy2_port
-        if [[ "$hy2_port" =~ ^[0-9]+$ ]] && [ "$hy2_port" -ge 1 ] && [ "$hy2_port" -le 65535 ]; then
-            green "你的hysteria2端口为: $hy2_port"
-            break
-        else
-            yellow "输入错误，请重新输入面板开放的UDP端口"
-        fi
-    done
-}
+# read_hy2_port() {
+#     while true; do
+#         reading "请输入hysteria2端口 (面板开放的UDP端口): " hy2_port
+#         if [[ "$hy2_port" =~ ^[0-9]+$ ]] && [ "$hy2_port" -ge 1 ] && [ "$hy2_port" -le 65535 ]; then
+#             green "你的hysteria2端口为: $hy2_port"
+#             break
+#         else
+#             yellow "输入错误，请重新输入面板开放的UDP端口"
+#         fi
+#     done
+# }
 
-read_tuic_port() {
-    while true; do
-        reading "请输入Tuic端口 (面板开放的UDP端口): " tuic_port
-        if [[ "$tuic_port" =~ ^[0-9]+$ ]] && [ "$tuic_port" -ge 1 ] && [ "$tuic_port" -le 65535 ]; then
-            green "你的tuic端口为: $tuic_port"
-            break
-        else
-            yellow "输入错误，请重新输入面板开放的UDP端口"
-        fi
-    done
-}
+# read_tuic_port() {
+#     while true; do
+#         reading "请输入Tuic端口 (面板开放的UDP端口): " tuic_port
+#         if [[ "$tuic_port" =~ ^[0-9]+$ ]] && [ "$tuic_port" -ge 1 ] && [ "$tuic_port" -le 65535 ]; then
+#             green "你的tuic端口为: $tuic_port"
+#             break
+#         else
+#             yellow "输入错误，请重新输入面板开放的UDP端口"
+#         fi
+#     done
+# }
 
 read_nz_variables() {
   if [ -n "$NEZHA_SERVER" ] && [ -n "$NEZHA_PORT" ] && [ -n "$NEZHA_KEY" ]; then
@@ -79,8 +79,8 @@ read_nz_variables() {
 }
 
 install_singbox() {
-echo -e "${yellow}本脚本同时四协议共存${purple}(vmess-ws,vmess-ws-tls(argo),hysteria2,tuic)${re}"
-echo -e "${yellow}开始运行前，请确保在面板${purple}已开放3个端口，一个tcp端口和两个udp端口${re}"
+echo -e "${yellow}本脚本安装vmess协议${purple}(vmess-ws)${re}"
+echo -e "${yellow}开始运行前，请确保在面板${purple}已开放1个tcp端口${re}"
 echo -e "${yellow}面板${purple}Additional services中的Run your own applications${yellow}已开启为${purplw}Enabled${yellow}状态${re}"
 reading "\n确定继续安装吗？【y/n】: " choice
   case "$choice" in
@@ -88,9 +88,9 @@ reading "\n确定继续安装吗？【y/n】: " choice
         cd $WORKDIR
         read_nz_variables
         read_vmess_port
-        read_hy2_port
-        read_tuic_port
-        argo_configure
+        # read_hy2_port
+        # read_tuic_port
+        # argo_configure
         generate_config
         download_singbox && wait
         run_sb && sleep 3
@@ -123,41 +123,41 @@ reading "\n清理所有进程将退出ssh连接，确定继续清理吗？【y/n
   esac
 }
 
-argo_configure() {
-  if [[ -z $ARGO_AUTH || -z $ARGO_DOMAIN ]]; then
-      reading "是否需要使用固定argo隧道？【y/n】: " argo_choice
-      [[ -z $argo_choice ]] && return
-      [[ "$argo_choice" != "y" && "$argo_choice" != "Y" && "$argo_choice" != "n" && "$argo_choice" != "N" ]] && { red "无效的选择，请输入y或n"; return; }
-      if [[ "$argo_choice" == "y" || "$argo_choice" == "Y" ]]; then
-          reading "请输入argo固定隧道域名: " ARGO_DOMAIN
-          green "你的argo固定隧道域名为: $ARGO_DOMAIN"
-          reading "请输入argo固定隧道密钥（Json或Token）: " ARGO_AUTH
-          green "你的argo固定隧道密钥为: $ARGO_AUTH"
-	  echo -e "${red}注意：${purple}使用token，需要在cloudflare后台设置隧道端口和面板开放的tcp端口一致${re}"
-      else
-          green "ARGO隧道变量未设置，将使用临时隧道"
-          return
-      fi
-  fi
+# argo_configure() {
+#   if [[ -z $ARGO_AUTH || -z $ARGO_DOMAIN ]]; then
+#       reading "是否需要使用固定argo隧道？【y/n】: " argo_choice
+#       [[ -z $argo_choice ]] && return
+#       [[ "$argo_choice" != "y" && "$argo_choice" != "Y" && "$argo_choice" != "n" && "$argo_choice" != "N" ]] && { red "无效的选择，请输入y或n"; return; }
+#       if [[ "$argo_choice" == "y" || "$argo_choice" == "Y" ]]; then
+#           reading "请输入argo固定隧道域名: " ARGO_DOMAIN
+#           green "你的argo固定隧道域名为: $ARGO_DOMAIN"
+#           reading "请输入argo固定隧道密钥（Json或Token）: " ARGO_AUTH
+#           green "你的argo固定隧道密钥为: $ARGO_AUTH"
+# 	  echo -e "${red}注意：${purple}使用token，需要在cloudflare后台设置隧道端口和面板开放的tcp端口一致${re}"
+#       else
+#           green "ARGO隧道变量未设置，将使用临时隧道"
+#           return
+#       fi
+#   fi
 
-  if [[ $ARGO_AUTH =~ TunnelSecret ]]; then
-    echo $ARGO_AUTH > tunnel.json
-    cat > tunnel.yml << EOF
-tunnel: $(cut -d\" -f12 <<< "$ARGO_AUTH")
-credentials-file: tunnel.json
-protocol: http2
+#   if [[ $ARGO_AUTH =~ TunnelSecret ]]; then
+#     echo $ARGO_AUTH > tunnel.json
+#     cat > tunnel.yml << EOF
+# tunnel: $(cut -d\" -f12 <<< "$ARGO_AUTH")
+# credentials-file: tunnel.json
+# protocol: http2
 
-ingress:
-  - hostname: $ARGO_DOMAIN
-    service: http://localhost:$vmess_port
-    originRequest:
-      noTLSVerify: true
-  - service: http_status:404
-EOF
-  else
-    green "ARGO_AUTH mismatch TunnelSecret,use token connect to tunnel"
-  fi
-}
+# ingress:
+#   - hostname: $ARGO_DOMAIN
+#     service: http://localhost:$vmess_port
+#     originRequest:
+#       noTLSVerify: true
+#   - service: http_status:404
+# EOF
+#   else
+#     green "ARGO_AUTH mismatch TunnelSecret,use token connect to tunnel"
+#   fi
+# }
 
 # Download Dependency Files
 download_singbox() {
@@ -466,10 +466,10 @@ rm -rf web bot npm boot.log config.json sb.log core tunnel.yml tunnel.json
 menu() {
    clear
    echo ""
-   purple "=== Serv00|ct8老王sing-box一键安装脚本 ===\n"
-   echo -e "${green}脚本地址：${re}${yellow}https://github.com/eooce/Sing-box${re}\n"
-   echo -e "${green}反馈论坛：${re}${yellow}https://bbs.vps8.me${re}\n"
-   echo -e "${green}TG反馈群组：${re}${yellow}https://t.me/vps888${re}\n"
+   purple "=== Serv00 | AM科技 sing-box一键安装脚本 ===\n"
+   echo -e "${green}脚本地址：${re}${yellow}https://github.com/ansoncloud8/am-vps-sing-box${re}\n"
+   echo -e "${green}反馈论坛：${re}${yellow}https://am.809098.xyz${re}\n"
+   echo -e "${green}TG反馈群组：${re}${yellow}https://t.me/AM_CLUBS${re}\n"
    purple "转载请著名出处，请勿滥用\n"
    green "1. 安装sing-box"
    echo  "==============="
