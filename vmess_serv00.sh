@@ -38,7 +38,7 @@ read_vmess_port() {
 
 read_vless_port() {
     while true; do
-        reading "请输入vless端口 (面板开放的TCP端口): " vless_port
+        reading "请输入vless端口 (面板开放的tcp端口): " vless_port
         if [[ "$vless_port" =~ ^[0-9]+$ ]] && [ "$vless_port" -ge 1 ] && [ "$vless_port" -le 65535 ]; then
             green "你的vless端口为: $vless_port"
             break
