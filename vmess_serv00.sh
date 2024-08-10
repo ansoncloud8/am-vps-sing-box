@@ -233,26 +233,6 @@ generate_config() {
   },
     "inbounds": [
     {
-       "tag": "hysteria-in",
-       "type": "hysteria2",
-       "listen": "::",
-       "listen_port": $hy2_port,
-       "users": [
-         {
-             "password": "$UUID"
-         }
-     ],
-     "masquerade": "https://bing.com",
-     "tls": {
-         "enabled": true,
-         "alpn": [
-             "h3"
-         ],
-         "certificate_path": "cert.pem",
-         "key_path": "private.key"
-        }
-    },
-    {
       "tag": "vmess-ws-in",
       "type": "vmess",
       "listen": "::",
@@ -266,27 +246,6 @@ generate_config() {
       "type": "ws",
       "path": "/vmess",
       "early_data_header_name": "Sec-WebSocket-Protocol"
-      }
-    },
-    {
-      "tag": "tuic-in",
-      "type": "tuic",
-      "listen": "::",
-      "listen_port": $tuic_port,
-      "users": [
-        {
-          "uuid": "$UUID",
-          "password": "admin123"
-        }
-      ],
-      "congestion_control": "bbr",
-      "tls": {
-        "enabled": true,
-        "alpn": [
-          "h3"
-        ],
-        "certificate_path": "cert.pem",
-        "key_path": "private.key"
       }
     }
 
@@ -412,18 +371,18 @@ run_sb() {
     pgrep -x "web" > /dev/null && green "web is running" || { red "web is not running, restarting..."; pkill -x "web" && nohup ./web run -c config.json >/dev/null 2>&1 & sleep 2; purple "web restarted"; }
   fi
 
-  if [ -e bot ]; then
-    if [[ $ARGO_AUTH =~ ^[A-Z0-9a-z=]{120,250}$ ]]; then
-      args="tunnel --edge-ip-version auto --no-autoupdate --protocol http2 run --token ${ARGO_AUTH}"
-    elif [[ $ARGO_AUTH =~ TunnelSecret ]]; then
-      args="tunnel --edge-ip-version auto --config tunnel.yml run"
-    else
-      args="tunnel --edge-ip-version auto --no-autoupdate --protocol http2 --logfile boot.log --loglevel info --url http://localhost:$vmess_port"
-    fi
-    nohup ./bot $args >/dev/null 2>&1 &
-    sleep 2
-    pgrep -x "bot" > /dev/null && green "bot is running" || { red "bot is not running, restarting..."; pkill -x "bot" && nohup ./bot "${args}" >/dev/null 2>&1 & sleep 2; purple "bot restarted"; }
-  fi
+  # if [ -e bot ]; then
+  #   if [[ $ARGO_AUTH =~ ^[A-Z0-9a-z=]{120,250}$ ]]; then
+  #     args="tunnel --edge-ip-version auto --no-autoupdate --protocol http2 run --token ${ARGO_AUTH}"
+  #   elif [[ $ARGO_AUTH =~ TunnelSecret ]]; then
+  #     args="tunnel --edge-ip-version auto --config tunnel.yml run"
+  #   else
+  #     args="tunnel --edge-ip-version auto --no-autoupdate --protocol http2 --logfile boot.log --loglevel info --url http://localhost:$vmess_port"
+  #   fi
+  #   nohup ./bot $args >/dev/null 2>&1 &
+  #   sleep 2
+  #   pgrep -x "bot" > /dev/null && green "bot is running" || { red "bot is not running, restarting..."; pkill -x "bot" && nohup ./bot "${args}" >/dev/null 2>&1 & sleep 2; purple "bot restarted"; }
+  # fi
  
 }
 
