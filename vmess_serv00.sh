@@ -36,17 +36,17 @@ read_vmess_port() {
     done
 }
 
-read_vless_port() {
-    while true; do
-        reading "请输入vless端口 (面板开放的tcp端口): " vless_port
-        if [[ "$vless_port" =~ ^[0-9]+$ ]] && [ "$vless_port" -ge 1 ] && [ "$vless_port" -le 65535 ]; then
-            green "你的vless端口为: $vless_port"
-            break
-        else
-            yellow "输入错误，请重新输入面板开放的TCP端口"
-        fi
-    done
-}
+# read_vless_port() {
+#     while true; do
+#         reading "请输入vless端口 (面板开放的tcp端口): " vless_port
+#         if [[ "$vless_port" =~ ^[0-9]+$ ]] && [ "$vless_port" -ge 1 ] && [ "$vless_port" -le 65535 ]; then
+#             green "你的vless端口为: $vless_port"
+#             break
+#         else
+#             yellow "输入错误，请重新输入面板开放的TCP端口"
+#         fi
+#     done
+# }
 
 # read_hy2_port() {
 #     while true; do
@@ -100,7 +100,7 @@ reading "\n确定继续安装吗？【y/n】: " choice
         cd $WORKDIR
         read_nz_variables
         read_vmess_port
-	read_vless_port
+	# read_vless_port
         # read_hy2_port
         # read_tuic_port
         # argo_configure
@@ -176,9 +176,11 @@ reading "\n清理所有进程将退出ssh连接，确定继续清理吗？【y/n
 download_singbox() {
   ARCH=$(uname -m) && DOWNLOAD_DIR="." && mkdir -p "$DOWNLOAD_DIR" && FILE_INFO=()
   if [ "$ARCH" == "arm" ] || [ "$ARCH" == "arm64" ] || [ "$ARCH" == "aarch64" ]; then
-      FILE_INFO=("https://github.com/eooce/test/releases/download/arm64/sb web" "https://github.com/eooce/test/releases/download/arm64/bot13 bot" "https://github.com/eooce/test/releases/download/ARM/swith npm")
+      # FILE_INFO=("https://github.com/eooce/test/releases/download/arm64/sb web" "https://github.com/eooce/test/releases/download/arm64/bot13 bot" "https://github.com/eooce/test/releases/download/ARM/swith npm")
+      FILE_INFO=("https://github.com/eooce/test/releases/download/arm64/sb web")
   elif [ "$ARCH" == "amd64" ] || [ "$ARCH" == "x86_64" ] || [ "$ARCH" == "x86" ]; then
-      FILE_INFO=("https://eooce.2go.us.kg/web web" "https://eooce.2go.us.kg/bot bot" "https://eooce.2go.us.kg/npm npm")
+      # FILE_INFO=("https://eooce.2go.us.kg/web web" "https://eooce.2go.us.kg/bot bot" "https://eooce.2go.us.kg/npm npm")
+      FILE_INFO=("https://eooce.2go.us.kg/web web")
   else
       echo "Unsupported architecture: $ARCH"
       exit 1
@@ -261,25 +263,32 @@ generate_config() {
       "early_data_header_name": "Sec-WebSocket-Protocol"
       }
     }
-   , {
-    "tag": "vless-ws",
-    "type": "vless",
-    "listen": "::",
-    "listen_port": $vless_port,
-    "users": [
-        {
-            "uuid": "$UUID",
-            "flow": ""
-        }
-    ],
-    "stream_settings": {
-        "network": "ws",
-        "ws_settings": {
-            "path": "/ws?ed=2048"  
-        }
+    ,{
+  "tag": "vmess-ws-tls",
+  "type": "vmess",
+  "listen": "::",
+  "listen_port": $vmess_port,
+  "users": [
+    {
+      "uuid": "$UUID"
     }
+  ],
+  "transport": {
+    "type": "ws",
+    "path": "/vmess",
+    "early_data_header_name": "Sec-WebSocket-Protocol"
+  },
+  "tls": {
+    "enabled": true,
+    "server_name": "$SERVER_NAME",
+    "certificates": [
+      {
+        "certificate_file": "cert.pem",
+        "key_file": key.pem"
+      }
+    ]
+  }
 }
-
 
  ],
     "outbounds": [
